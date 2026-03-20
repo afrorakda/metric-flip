@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Metric Flip</title>
+    
+    <link rel="icon" href="image_9.png">
+    <link rel="apple-touch-icon" href="image_9.png">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; }
+        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 25px 0 5px; }
+        .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 35px; }
+        
+        .input-group { position: relative; margin-bottom: 10px; }
+        .input-box { width: 100%; padding: 18px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 18px; outline: none; transition: 0.2s; -webkit-appearance: none; font-weight: 600; }
+        .input-box:focus { border-color: #111; }
+        
+        #result-area { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .card { background: #f9f9f9; padding: 20px; border-radius: 15px; border: 1px solid #eee; animation: fadeIn 0.3s ease; display: flex; justify-content: space-between; align-items: center; }
+        .unit-label { font-size: 0.75rem; color: #888; font-weight: 700; text-transform: uppercase; }
+        .value { font-size: 1.3rem; font-weight: 800; color: #111; }
+        
+        footer { margin-top: auto; padding: 40px 0; text-align: center; font-size: 0.7rem; color: #aaa; line-height: 1.8; }
+        .footer-line { margin-bottom: 5px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Metric Flip</h1>
+    <p class="subtitle">Quickly flip Metric to US/UK units.</p>
+    
+    <div class="input-group">
+        <input type="number" id="v" class="input-box" placeholder="Enter Metric value (e.g. 25)" oninput="flip()" autofocus>
+    </div>
+
+    <div id="result-area"></div>
+    
+    <footer>
+        <div class="footer-line">No login / No tracking / Browser only</div>
+        <div class="footer-line">No server / No Ads</div>
+        <div class="footer-line">Privacy Policy</div>
+        <div style="margin-top: 15px;">Metric Flip © 2026</div>
+    </footer>
+</div>
+
+<script>
+    function flip() {
+        const val = parseFloat(document.getElementById('v').value);
+        const out = document.getElementById('result-area');
+        
+        if (isNaN(val)) {
+            out.innerHTML = '';
+            return;
+        }
+
+        const results = [
+            { label: "Celsius to Fahrenheit", val: (val * 9/5 + 32).toFixed(1) + " °F" },
+            { label: "Grams to Ounces", val: (val * 0.035274).toFixed(2) + " oz" },
+            { label: "Kilograms to Pounds", val: (val * 2.20462).toFixed(2) + " lbs" },
+            { label: "Centimeters to Feet/Inches", val: cmToFtIn(val) },
+            { label: "Meters to Yards", val: (val * 1.09361).toFixed(2) + " yd" },
+            { label: "Kilometers to Miles", val: (val * 0.621371).toFixed(2) + " mi" }
+        ];
+
+        out.innerHTML = results.map(r => `
+            <div class="card">
+                <span class="unit-label">${r.label}</span>
+                <span class="value">${r.val}</span>
+            </div>
+        `).join('');
+    }
+
+    function cmToFtIn(cm) {
+        const totalInches = cm / 2.54;
+        const feet = Math.floor(totalInches / 12);
+        const inches = Math.round(totalInches % 12);
+        return `${feet}' ${inches}"`;
+    }
+</script>
+</body>
+</html>

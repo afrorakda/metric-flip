@@ -11,35 +11,34 @@
     <link rel="apple-touch-icon" href="image_9.png">
 
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-        .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; }
+        
         h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 25px 0 5px; }
         .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 35px; }
         
-        /* 入力窓のクリアボタン設定 */
         .input-wrapper { position: relative; width: 100%; margin-bottom: 10px; }
         .input-box { width: 100%; padding: 18px 50px 18px 18px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 18px; outline: none; transition: 0.2s; -webkit-appearance: none; font-weight: 600; }
         .input-box:focus { border-color: #111; }
-        .btn-clear { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #ccc; cursor: pointer; display: none; padding: 0 5px; -webkit-appearance: none; }
+        .btn-clear-x { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #ccc; cursor: pointer; display: none; padding: 0 5px; -webkit-appearance: none; }
         
-        #result-area { margin-top: 15px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
+        #result-area { margin-top: 15px; display: flex; flex-direction: column; gap: 12px; }
         .card { background: #f9f9f9; padding: 20px; border-radius: 15px; border: 1px solid #eee; animation: fadeIn 0.3s ease; display: flex; justify-content: space-between; align-items: center; }
         .unit-label { font-size: 0.75rem; color: #888; font-weight: 700; text-transform: uppercase; }
         .value { font-size: 1.3rem; font-weight: 800; color: #111; }
         
-        /* フッターのホーム画面登録ボタン */
-        footer { margin-top: 60px; padding: 30px 0; text-align: center; font-size: 0.7rem; color: #aaa; line-height: 1.8; border-top: 1px solid #eee; }
-        .install-btn { background: #f0f0f0; color: #111; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 700; cursor: pointer; margin: 0 auto 25px; font-size: 0.8rem; display: inline-block; transition: 0.2s; -webkit-appearance: none; }
-        .install-btn:active { transform: scale(0.96); background: #e0e0e0; }
-        
-        /* インストール案内モーダル */
-        #install-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; padding:20px; box-sizing:border-box; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 300px; position: relative; animation: modalIn 0.3s ease; }
-        .btn-close-modal { position: absolute; top: 15px; right: 15px; background:none; border:none; font-size:20px; cursor:pointer; color: #999; -webkit-appearance: none; }
-        .install-guide-box { font-size: 0.8rem; line-height: 1.6; color: #333; margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 10px; text-align: left; }
+        /* Fridge Combo Standard Footer */
+        footer { margin-top: auto; padding: 40px 0 20px; text-align: center; font-size: 13px; color: #666; border-top: 1px solid #f0f0f0; }
+        .kofi-btn { display: inline-block; background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; margin-bottom: 20px; transition: 0.2s; }
+        .install-btn { background: #f0f0f0; color: #111; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 500; margin-bottom: 20px; }
+        .footer-line { line-height: 1.8; color: #999; }
+
+        /* Unified Install Modal */
+        #install-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 85%; max-width: 300px; position: relative; text-align: center; }
+        .btn-close-modal { position: absolute; top: 15px; right: 15px; background:none; border:none; font-size:20px; color: #999; cursor: pointer; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -48,30 +47,47 @@
     <p class="subtitle">Quickly flip Metric to US/UK units.</p>
     
     <div class="input-wrapper">
-        <input type="number" id="v" class="input-box" placeholder="Enter Metric value (e.g. 100)" oninput="flip()" autofocus>
-        <button id="cl" class="btn-clear" onclick="clearInput()">✕</button>
+        <input type="number" id="v" class="input-box" placeholder="Metric value (e.g. 100)" oninput="flip()" autofocus>
+        <button id="cl" class="btn-clear-x" onclick="clearInput()">✕</button>
     </div>
 
     <div id="result-area"></div>
     
     <footer>
-        <button class="install-btn" onclick="showInstall()">📱 Add to Home Screen</button>
-        
-        <div class="footer-line">No login / No tracking / Browser only</div>
-        <div class="footer-line">No server / No Ads</div>
-        <div class="footer-line">Privacy Policy</div>
-        <div style="margin-top: 15px;">Metric Flip © 2026</div>
+        <a href="https://ko-fi.com/afrorakda" target="_blank" rel="noopener" class="kofi-btn">☕ Support me on Ko-fi</a>
+        <div>
+            <button class="install-btn" onclick="showInstall()">Add to Home Screen</button>
+        </div>
+        <div class="footer-line">
+            <div>No login / No tracking / No ads / Browser only</div>
+            <div>Privacy Policy</div>
+            <div style="margin-top: 10px; font-weight: bold; color: #111;">Metric Flip © 2026</div>
+        </div>
     </footer>
 </div>
 
 <div id="install-modal" onclick="hideInstall()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <button class="btn-close-modal" onclick="hideInstall()">✕</button>
-        <h2 style="font-size: 1.2rem; margin-top:0;">📱 Install</h2>
-        <p style="font-size: 0.85rem; color: #555; line-height: 1.5; margin-bottom: 0;">Add to your home screen.</p>
-        <div class="install-guide-box">
-            <p style="margin: 0 0 10px 0;"><strong>🍏 iPhone (Safari):</strong><br>Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
-            <p style="margin: 0;"><strong>🤖 Android (Chrome):</strong><br>Tap <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.</p>
+        <h2 style="font-size: 1.2rem; margin-top:0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            📱 Install
+        </h2>
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">Add to your home screen.</p>
+        <div style="text-align: left; font-size: 0.8rem; background: #f9f9f9; padding: 18px; border-radius: 12px;">
+            <div style="margin-bottom: 12px; display: flex; align-items: start; gap: 8px;">
+                <span>🍏</span>
+                <div>
+                    <strong>iPhone (Safari):</strong><br>
+                    Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.
+                </div>
+            </div>
+            <div style="display: flex; align-items: start; gap: 8px;">
+                <span>🤖</span>
+                <div>
+                    <strong>Android (Chrome):</strong><br>
+                    Tap <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -83,7 +99,6 @@
         const out = document.getElementById('result-area');
         const clBtn = document.getElementById('cl');
         
-        // 入力があれば×ボタンを表示
         clBtn.style.display = input.value ? 'block' : 'none';
 
         if (isNaN(val)) {
@@ -91,7 +106,6 @@
             return;
         }
 
-        // 変換ロジック
         const results = [
             { label: "Celsius to Fahrenheit", val: (val * 9/5 + 32).toFixed(1) + " °F" },
             { label: "Grams to Ounces", val: (val * 0.035274).toFixed(2) + " oz" },
@@ -101,7 +115,6 @@
             { label: "Kilometers to Miles", val: (val * 0.621371).toFixed(2) + " mi" }
         ];
 
-        // 結果カードの表示
         out.innerHTML = results.map(r => `
             <div class="card">
                 <span class="unit-label">${r.label}</span>
@@ -110,15 +123,13 @@
         `).join('');
     }
 
-    // クリアボタンの挙動：入力と結果を全消去
     function clearInput() {
         const input = document.getElementById('v');
         input.value = '';
         input.focus();
-        flip(); // 再計算させて結果を消す
+        flip();
     }
 
-    // フィート・インチ変換
     function cmToFtIn(cm) {
         const totalInches = cm / 2.54;
         const feet = Math.floor(totalInches / 12);
@@ -126,7 +137,6 @@
         return `${feet}' ${inches}"`;
     }
 
-    // モーダル操作
     function showInstall() { document.getElementById('install-modal').style.display = 'flex'; }
     function hideInstall() { document.getElementById('install-modal').style.display = 'none'; }
 </script>
